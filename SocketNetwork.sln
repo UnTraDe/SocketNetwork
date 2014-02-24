@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SocketNetwork", "SocketNetwork\SocketNetwork.vcxproj", "{5345D2DD-D61C-4B91-AB63-29D2040F9B2C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo", "Demo\Demo.vcxproj", "{FBF4F838-52A3-45CF-B0E9-937BB534517E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5345D2DD-D61C-4B91-AB63-29D2040F9B2C} = {5345D2DD-D61C-4B91-AB63-29D2040F9B2C}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5345D2DD-D61C-4B91-AB63-29D2040F9B2C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5345D2DD-D61C-4B91-AB63-29D2040F9B2C}.Debug|Win32.Build.0 = Debug|Win32
+		{5345D2DD-D61C-4B91-AB63-29D2040F9B2C}.Release|Win32.ActiveCfg = Release|Win32
+		{5345D2DD-D61C-4B91-AB63-29D2040F9B2C}.Release|Win32.Build.0 = Release|Win32
+		{FBF4F838-52A3-45CF-B0E9-937BB534517E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FBF4F838-52A3-45CF-B0E9-937BB534517E}.Debug|Win32.Build.0 = Debug|Win32
+		{FBF4F838-52A3-45CF-B0E9-937BB534517E}.Release|Win32.ActiveCfg = Release|Win32
+		{FBF4F838-52A3-45CF-B0E9-937BB534517E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

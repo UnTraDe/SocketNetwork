@@ -5,7 +5,7 @@
 
 using namespace std;
 
-char httpReq[] = "GET / HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+char httpReq[] = "GET / HTTP/1.1\r\nHost: www.google.co.il\r\n\r\n";
 
 int main()
 {
@@ -21,8 +21,7 @@ int main()
 
 		socket.Receive(buffer, 1024);
 
-		cout << buffer << endl;
-
+		printf("%s", buffer);
 		socket.Shutdown();
 	}
 	catch (SocketException e)

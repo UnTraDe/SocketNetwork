@@ -8,12 +8,12 @@ class TCPSocket : public Socket
 {
 public:
 	TCPSocket() : mIsConnected(false), mIsBound(false), mIsListening(false) { }
-	TCPSocket(char *ip, int port) { Connect(ip, port); }
+	TCPSocket(const char *ip, int port) { Connect(ip, port); }
 	~TCPSocket() { Shutdown(); }
 
 	int Send(char *buffer, int length) { return send(mRealSocket, buffer, length, 0); }
 	int Receive(char *buffer, int length) { return recv(mRealSocket, buffer, length, 0); }
-	void Connect(char *ip, int port);
+	void Connect(const char *ip, int port);
 	void Bind(int port);
 	void Listen(int maxConnections);
 	TCPSocket Accept();

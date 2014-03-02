@@ -7,7 +7,7 @@ TCPSocket::TCPSocket(SOCKET client)
 	mIsConnected = true;
 }
 
-void TCPSocket::Connect(char *ip, int port)
+void TCPSocket::Connect(const char *ip, int port)
 {
 	int iResult;
 

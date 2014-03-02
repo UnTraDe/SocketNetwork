@@ -3,11 +3,12 @@
 
 TCPSocket::TCPSocket(SOCKET client)
 {
+	Initialize();
 	mRealSocket = client;
 	mIsConnected = true;
 }
 
-void TCPSocket::Connect(const char *ip, int port)
+void TCPSocket::Initialize()
 {
 	int iResult;
 
@@ -15,8 +16,6 @@ void TCPSocket::Connect(const char *ip, int port)
 
 	if (iResult != 0)
 	{
-		WSACleanup();
-
 		if (iResult == WSAVERNOTSUPPORTED)
 		{
 			throw SocketException("This implementation of WinSock does not support the requested version");
@@ -26,7 +25,10 @@ void TCPSocket::Connect(const char *ip, int port)
 			throw SocketException("Unknown error");
 		}
 	}
+}
 
+void TCPSocket::Connect(const char *ip, int port)
+{
 	struct addrinfo hints;
 
 	ZeroMemory(&hints, sizeof (hints));
@@ -39,12 +41,11 @@ void TCPSocket::Connect(const char *ip, int port)
 	memset(_port, 0, sizeof(port));
 	_itoa_s(port, _port, 10);
 
-	iResult = getaddrinfo(ip, _port, &hints, &mAddrInfo);
+	int iResult = getaddrinfo(ip, _port, &hints, &mAddrInfo);
 
 	if (iResult != 0)
 	{
-		WSACleanup();
-		throw SocketException("Failed to resolve address");
+		throw SocketException("Failed to resolve address", iResult);
 	}
 
 	mRealSocket = INVALID_SOCKET;
@@ -72,12 +73,39 @@ void TCPSocket::Connect(const char *ip, int port)
 
 void TCPSocket::Bind(int port)
 {
-	int iResult = bind(mRealSocket, mAddrInfoPtr->ai_addr, (int)mAddrInfoPtr->ai_addrlen);
+	struct addrinfo hints;
+
+	ZeroMemory(&hints, sizeof (hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+	hints.ai_flags = AI_PASSIVE;
+
+	char _port[5];
+	memset(_port, 0, sizeof(port));
+	_itoa_s(port, _port, 10);
+
+	int iResult = getaddrinfo(NULL, _port, &hints, &mAddrInfo);
+
+	if (iResult != 0)
+	{
+		throw SocketException("Failed to create the socket", iResult);
+	}
+
+	mAddrInfoPtr = mAddrInfo;
+
+	mRealSocket = socket(mAddrInfoPtr->ai_family, mAddrInfoPtr->ai_socktype, mAddrInfoPtr->ai_protocol);
+
+	if (mRealSocket == INVALID_SOCKET)
+	{	
+		throw SocketException("Failed to create socket", WSAGetLastError());
+	}
+
+	iResult = bind(mRealSocket, mAddrInfoPtr->ai_addr, (int)mAddrInfoPtr->ai_addrlen);
 
 	if (iResult == SOCKET_ERROR)
 	{
-		Shutdown();
-		throw SocketException("Failed to bind socket");
+		throw SocketException("Failed to bind socket", WSAGetLastError());
 	}
 
 	mIsBound = true;
@@ -92,14 +120,13 @@ void TCPSocket::Listen(int maxConnections)
 
 	if (iResult == SOCKET_ERROR)
 	{
-		Shutdown();
-		throw SocketException("Failed to bind socket");
+		throw SocketException("Failed to listen socket");
 	}
 
 	mIsListening = true;
 }
 
-TCPSocket TCPSocket::Accept()
+TCPSocket* TCPSocket::Accept()
 {
 	SOCKET client = INVALID_SOCKET;
 
@@ -107,16 +134,16 @@ TCPSocket TCPSocket::Accept()
 
 	if (client == INVALID_SOCKET)
 	{
-		Shutdown();
-		throw SocketException("Error encountered during accept");
+		throw SocketException("Error encountered during accept", WSAGetLastError());
 	}
 
-	return TCPSocket(client);
+	return new TCPSocket(client);
 }
 
 void TCPSocket::Shutdown()
 {
-	//freeaddrinfo(mAddrInfo);
-	closesocket(mRealSocket);
+	if (mIsConnected || mIsBound || mIsListening)
+		closesocket(mRealSocket);
+
 	WSACleanup();
 }

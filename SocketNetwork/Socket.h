@@ -27,10 +27,13 @@ protected:
 class SocketException : public std::exception
 {
 public:
-	SocketException(char *message) { mMessage = message; };
+	SocketException(const char *message) { mMessage = message; mErrorCode = 0; };
+	SocketException(const char *message, int errorCode) { mMessage = message;  mErrorCode = errorCode; };
 
 	virtual const char* what() const throw() { return mMessage; }
+	int getErrorCode() { return mErrorCode;  }
 
 private:
-	char *mMessage;
+	const char *mMessage;
+	int mErrorCode;
 };

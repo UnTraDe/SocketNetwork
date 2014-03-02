@@ -7,8 +7,8 @@
 class TCPSocket : public Socket
 {
 public:
-	TCPSocket() : mIsConnected(false), mIsBound(false), mIsListening(false) { }
-	TCPSocket(const char *ip, int port) { Connect(ip, port); }
+	TCPSocket() : mIsConnected(false), mIsBound(false), mIsListening(false) { Initialize(); }
+	TCPSocket(const char *ip, int port) : mIsConnected(true) { Initialize(); Connect(ip, port); }
 	~TCPSocket() { Shutdown(); }
 
 	int Send(char *buffer, int length) { return send(mRealSocket, buffer, length, 0); }
@@ -16,11 +16,13 @@ public:
 	void Connect(const char *ip, int port);
 	void Bind(int port);
 	void Listen(int maxConnections);
-	TCPSocket Accept();
-	void Shutdown();
+	TCPSocket* Accept();
+	
 
 private:
 	TCPSocket(SOCKET socket);
+	void Initialize();
+	void Shutdown();
 	struct addrinfo *mAddrInfo, *mAddrInfoPtr;
 	bool mIsConnected;
 	bool mIsBound;

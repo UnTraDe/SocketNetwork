@@ -1,7 +1,7 @@
 SocketNetwork
 =============
 
-A simple library which wraps the WinSock 2 sockets to provide a simpler interface with them.
+A simple library which wraps the WinSock 2 sockets to provide a simpler object-oriented interface with them.
 
 
 Usage
